@@ -1,0 +1,22 @@
+{
+  "title": "Emil's App Store",
+  "tagline": "Apps I build with Claude Code",
+  "apps": [
+    {
+      "slug": "welcome",
+      "name": "Welcome",
+      "emoji": "👋",
+      "description": "Start here — how it works + a live update tester.",
+      "color1": "#7C3AED",
+      "color2": "#2563EB"
+    },
+    {
+      "slug": "scratch",
+      "name": "Scratchpad",
+      "emoji": "📝",
+      "description": "A quick notes pad that saves right on your phone.",
+      "color1": "#14B8A6",
+      "color2": "#22C55E"
+    }
+  ]
+}

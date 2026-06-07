@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Welcome</title>
+  <meta name="description" content="How this app store works, plus a live update tester." />
+  <link rel="manifest" href="/apps/welcome/manifest.webmanifest" />
+  <meta name="theme-color" content="#0b0b0f" />
+  <link rel="apple-touch-icon" href="/icons/welcome-180.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <meta name="apple-mobile-web-app-title" content="Welcome" />
+  <style>
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html, body { margin: 0; }
+    body {
+      font: 16px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+      color: #f4f4f5;
+      background: radial-gradient(900px 500px at 50% -10%, #1e1b4b66, transparent 60%), #0b0b0f;
+      min-height: 100dvh;
+      padding: max(env(safe-area-inset-top), 22px) 22px max(env(safe-area-inset-bottom), 32px);
+    }
+    .wrap { max-width: 560px; margin: 0 auto; }
+    .top { display: flex; align-items: center; gap: 14px; }
+    .badge { width: 64px; height: 64px; border-radius: 16px; display: grid; place-items: center;
+             font-size: 32px; background: linear-gradient(145deg, #7C3AED, #2563EB);
+             box-shadow: 0 10px 28px -10px #7C3AED; }
+    h1 { margin: 0; font-size: 30px; letter-spacing: -0.03em; }
+    .sub { color: #a1a1aa; margin: 2px 0 0; }
+    a.back { color: #c4b5fd; text-decoration: none; font-size: 14px; display: inline-block; margin-bottom: 16px; }
+
+    .version {
+      margin: 22px 0; padding: 18px 20px; border-radius: 18px; text-align: center;
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.10);
+    }
+    .version .label { font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: #818cf8; }
+    .version .num { font-size: 46px; font-weight: 800; letter-spacing: -0.03em; margin: 4px 0 0;
+                    background: linear-gradient(120deg, #a5b4fc, #67e8f9); -webkit-background-clip: text;
+                    background-clip: text; color: transparent; }
+    .version .note { color: #71717a; font-size: 13px; margin-top: 6px; }
+
+    .steps { background: rgba(255,255,255,0.035); border: 1px solid rgba(255,255,255,0.08);
+             border-radius: 18px; padding: 6px 20px; }
+    .steps li { margin: 14px 0; color: #d4d4d8; }
+    .steps b { color: #fff; }
+    code { background: rgba(255,255,255,0.08); padding: 1px 6px; border-radius: 6px; font-size: 13px; }
+
+    .install { margin-top: 20px; padding: 14px 16px; border-radius: 14px;
+      background: rgba(129,140,248,0.10); border: 1px solid rgba(129,140,248,0.22);
+      color: #c7d2fe; font-size: 14px; }
+    .install b { color: #e0e7ff; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <a class="back" href="/">‹ All apps</a>
+    <div class="top">
+      <div class="badge">👋</div>
+      <div>
+        <h1>It works!</h1>
+        <p class="sub">Your personal app store is live.</p>
+      </div>
+    </div>
+
+    <!-- UPDATE TESTER: bump this number, push, reload on your phone. -->
+    <div class="version">
+      <div class="label">This build</div>
+      <div class="num">v1</div>
+      <div class="note">Change “v1” in this file, push to git, reload here — you should see the new number.</div>
+    </div>
+
+    <ol class="steps">
+      <li><b>Add to Home Screen:</b> tap <b>Share</b> → <b>Add to Home Screen</b>. This app gets its own icon.</li>
+      <li><b>Browse more apps:</b> tap <code>‹ All apps</code> to return to the store.</li>
+      <li><b>Add a new app:</b> on your Mac, run <code>npm run new-app -- "My Idea" --emoji "🎯"</code>, build it, then <code>git push</code>.</li>
+      <li><b>Updates are instant:</b> every push redeploys; just reopen the app to get the latest.</li>
+    </ol>
+
+    <div class="install" id="install" hidden>
+      Tip: tap <b>Share</b> → <b>Add to Home Screen</b> to keep this on your home screen.
+    </div>
+  </div>
+
+  <script>
+    var standalone = window.navigator.standalone === true ||
+      window.matchMedia('(display-mode: standalone)').matches;
+    if (!standalone) document.getElementById('install').hidden = false;
+  </script>
+</body>
+</html>

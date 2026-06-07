@@ -1,0 +1,15 @@
+{
+  "name": "Welcome",
+  "short_name": "Welcome",
+  "description": "How this app store works, plus a live update tester.",
+  "start_url": "/apps/welcome/",
+  "scope": "/apps/welcome/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0b0b0f",
+  "theme_color": "#0b0b0f",
+  "icons": [
+    { "src": "/icons/welcome-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/welcome-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}

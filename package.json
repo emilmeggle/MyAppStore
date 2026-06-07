@@ -1,0 +1,12 @@
+{
+  "name": "my-app-store",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "A personal PWA app store — build apps with Claude Code, push, install on iPhone.",
+  "scripts": {
+    "new-app": "node scripts/new-app.mjs",
+    "icon": "node scripts/gen-icon.mjs",
+    "dev": "node scripts/serve.mjs"
+  }
+}
