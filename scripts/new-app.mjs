@@ -122,44 +122,61 @@ const manifestTemplate = ({ name, slug, desc, c1 }) => JSON.stringify({
   ],
 }, null, 2) + '\n';
 
+function registerInStore(entry) {
+  const appsPath = join(ROOT, 'apps.json');
+  const store = JSON.parse(readFileSync(appsPath, 'utf8'));
+  store.apps = store.apps || [];
+  const i = store.apps.findIndex((a) => (a.id || a.slug) === entry.id);
+  if (i >= 0) store.apps[i] = { ...store.apps[i], ...entry };
+  else store.apps.push(entry);
+  writeFileSync(appsPath, JSON.stringify(store, null, 2) + '\n');
+}
+
 function main() {
   const args = parseArgs(process.argv.slice(2));
   const name = (args.name || args._.join(' ')).trim();
   if (!name) {
-    console.error('usage: node scripts/new-app.mjs "App Name" [--emoji "🎯"] [--desc "..."] [--colors "#hex,#hex"]');
+    console.error('usage:');
+    console.error('  node scripts/new-app.mjs "App Name" [--emoji "🎯"] [--desc "..."] [--colors "#hex,#hex"]');
+    console.error('  node scripts/new-app.mjs "App Name" --url "https://my-app.example.com" [--emoji "🎯"] [--desc "..."]');
     process.exit(1);
   }
-  const slug = slugify(name);
+  const id = slugify(name);
   const emoji = args.emoji || '🧩';
   const desc = args.desc || name;
-  const [c1, c2] = pickColors(slug, args.colors);
+  const version = args.version || '1.0';
+  const updated = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+  const [c1, c2] = pickColors(id, args.colors);
 
-  const appDir = join(ROOT, 'apps', slug);
+  // --- External app: lives in its own repo/host; the store just links to it. ---
+  if (args.url) {
+    registerInStore({ id, name, emoji, description: desc, color1: c1, color2: c2, version, updated, url: args.url });
+    console.log(`✓ Linked external app "${name}"  (id: ${id})`);
+    console.log(`  → ${args.url}`);
+    console.log(`  • registered in apps.json (no local files; the app stays in its own repo)`);
+    console.log(`\nNext:  git add apps.json && git commit -m "link ${id}" && git push`);
+    return;
+  }
+
+  // --- Internal app: scaffolded into this repo under apps/<id>/. ---
+  const appDir = join(ROOT, 'apps', id);
   if (existsSync(appDir)) {
-    console.error(`✗ apps/${slug} already exists. Pick a different name or delete it first.`);
+    console.error(`✗ apps/${id} already exists. Pick a different name or delete it first.`);
     process.exit(1);
   }
   mkdirSync(appDir, { recursive: true });
-  writeFileSync(join(appDir, 'index.html'), appTemplate({ name, slug, desc, emoji, c1, c2 }));
-  writeFileSync(join(appDir, 'manifest.webmanifest'), manifestTemplate({ name, slug, desc, c1 }));
-  genIcon({ slug, label: name, color1: c1, color2: c2 });
+  writeFileSync(join(appDir, 'index.html'), appTemplate({ name, slug: id, desc, emoji, c1, c2 }));
+  writeFileSync(join(appDir, 'manifest.webmanifest'), manifestTemplate({ name, slug: id, desc, c1 }));
+  genIcon({ slug: id, label: name, color1: c1, color2: c2 });
+  registerInStore({ id, name, emoji, description: desc, color1: c1, color2: c2, version, updated, slug: id });
 
-  // Register in apps.json (skip if already present).
-  const appsPath = join(ROOT, 'apps.json');
-  const store = JSON.parse(readFileSync(appsPath, 'utf8'));
-  store.apps = store.apps || [];
-  if (!store.apps.some((a) => a.slug === slug)) {
-    store.apps.push({ slug, name, emoji, description: desc, color1: c1, color2: c2 });
-    writeFileSync(appsPath, JSON.stringify(store, null, 2) + '\n');
-  }
-
-  console.log(`✓ Created app "${name}"  (slug: ${slug})`);
-  console.log(`  • apps/${slug}/index.html      ← build your app here`);
-  console.log(`  • apps/${slug}/manifest.webmanifest`);
-  console.log(`  • icons/${slug}-{180,192,512}.png`);
+  console.log(`✓ Created app "${name}"  (id: ${id})`);
+  console.log(`  • apps/${id}/index.html      ← build your app here`);
+  console.log(`  • apps/${id}/manifest.webmanifest`);
+  console.log(`  • icons/${id}-{180,192,512}.png`);
   console.log(`  • registered in apps.json`);
   console.log(`\nNext:  open the file, build the UI, then:`);
-  console.log(`  git add -A && git commit -m "add ${slug}" && git push`);
+  console.log(`  git add -A && git commit -m "add ${id}" && git push`);
 }
 
 main();

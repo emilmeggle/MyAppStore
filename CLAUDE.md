@@ -1,17 +1,22 @@
 # CLAUDE.md — working in this repo
 
-This is a **personal PWA "app store"**: a static site, hosted on Vercel via
-GitHub. The owner builds small web apps here with Claude Code, pushes to git, and
-installs each one to their iPhone home screen (Add to Home Screen in Safari).
+This is a **personal PWA "app store"**: a static site hosted on **GitHub Pages**
+(live at https://emilmeggle.github.io/MyAppStore/). A hub page lists apps from
+`apps.json`; the owner installs each to their iPhone home screen (Add to Home
+Screen in Safari). Apps are either **built-in** (scaffolded under `apps/<id>/`) or
+**linked** (an entry with a `url` pointing at an app hosted in its own repo).
 
 ## The golden rules
 
 1. **It's a static site. No build step, no framework, no bundler.** Plain HTML/CSS/JS
    per app. You may load libraries from a CDN inside an app if needed.
-2. **NO service worker.** This is deliberate — a SW makes pushed updates show up
-   stale on iOS, which breaks the whole "push → instant update" promise. Do not add
-   one unless the owner explicitly asks for offline support (and then use
-   network-first + versioned cache + `skipWaiting()`).
+2. **No service worker currently** — so no offline mode and no desktop install, and
+   GitHub Pages' `Cache-Control: max-age=600` means a pushed change can take up to
+   10 min to appear in an already-loaded browser (hard-refresh to see it now). Pages
+   ignores `vercel.json`. If the owner asks for instant updates / offline / desktop
+   install, the fix is ONE network-first service worker on this origin (versioned
+   cache + `skipWaiting()` + `clients.claim()`); it cannot help *linked* (cross-
+   origin) apps — those manage their own caching.
 3. **Use RELATIVE paths everywhere — never root-absolute (`/...`).** The site is
    served from a subpath on GitHub Pages (`/MyAppStore/`), so a leading `/` breaks.
    Apps always live at `apps/<slug>/` (depth 2), so from an app page use `../../icons/...`
@@ -24,20 +29,30 @@ installs each one to their iPhone home screen (Add to Home Screen in Safari).
 
 ## To add an app
 
+**Built-in** (scaffolded into this repo):
 ```bash
 node scripts/new-app.mjs "App Name" --emoji "🎯" --desc "one-liner" [--colors "#hex,#hex"]
 ```
+Creates `apps/<id>/index.html` (a blank shell) + `manifest.webmanifest`, generates
+`icons/<id>-{180,192,512}.png`, and registers it in `apps.json`. Then build the real
+UI in the shell.
 
-This creates `apps/<slug>/index.html` (a blank shell), `apps/<slug>/manifest.webmanifest`,
-generates `icons/<slug>-{180,192,512}.png`, and registers the app in `apps.json`.
-Then build the real UI in the shell's `index.html`. **Don't hand-roll the folder/
-manifest/icon/registry by hand — use the script** so nothing is missed.
+**Linked** (app lives in its own repo/host; store just points at it):
+```bash
+node scripts/new-app.mjs "App Name" --emoji "🎯" --url "https://its-own-url/"
+```
+Adds only an `apps.json` entry (no local files). **Prefer this for the owner's other
+projects** — keeps their source private and self-contained.
+
+**Always use the script — don't hand-roll the folder/manifest/icon/registry.**
+Re-running with the same name updates the existing entry (keyed by `id`).
 
 ## To change an existing app
 
-Edit `apps/<slug>/index.html`. If you change the app's name/emoji/description,
-update its entry in `apps.json` too (the hub reads from there). To regenerate an
-icon: `node scripts/gen-icon.mjs <slug> "<Label>" "#c1" "#c2"`.
+Edit `apps/<id>/index.html`. If you change name/emoji/description/version, update its
+entry in `apps.json` too (the hub reads from there; entry fields: `id`, `name`,
+`emoji`, `description`, `color1/2`, `version`, `updated`, and `slug` or `url`).
+Regenerate an icon: `node scripts/gen-icon.mjs <id> "<Label>" "#c1" "#c2"`.
 
 ## Icons
 
@@ -48,8 +63,10 @@ never pre-round. Color emoji can't be rasterized reliably, so icons are a gradie
 
 ## Deploy
 
-`git add -A && git commit -m "..." && git push`. Vercel auto-deploys `main`.
-There is no deploy command to run locally. `npm run dev` serves a local preview.
+`git add -A && git commit -m "..." && git push`. GitHub Pages auto-deploys `main`
+(live in ~1 min; browser cache up to 10 min — see rule 2). No local deploy command.
+`npm run dev` serves a local preview at the repo root; note Pages serves under the
+`/MyAppStore/` subpath, so relative paths matter (rule 3).
 
 ## Verify changes
 

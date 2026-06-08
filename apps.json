@@ -3,20 +3,26 @@
   "tagline": "Apps I build with Claude Code",
   "apps": [
     {
-      "slug": "welcome",
+      "id": "welcome",
       "name": "Welcome",
       "emoji": "👋",
       "description": "Start here — how it works + a live update tester.",
       "color1": "#7C3AED",
-      "color2": "#2563EB"
+      "color2": "#2563EB",
+      "version": "1.0",
+      "updated": "2026-06-08",
+      "slug": "welcome"
     },
     {
-      "slug": "scratch",
+      "id": "scratch",
       "name": "Scratchpad",
       "emoji": "📝",
       "description": "A quick notes pad that saves right on your phone.",
       "color1": "#14B8A6",
-      "color2": "#22C55E"
+      "color2": "#22C55E",
+      "version": "1.0",
+      "updated": "2026-06-08",
+      "slug": "scratch"
     }
   ]
 }

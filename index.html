@@ -60,7 +60,12 @@
     .name { font-weight: 650; font-size: 17px; letter-spacing: -.01em; }
     .desc { color: #a1a1aa; font-size: 14px; overflow: hidden; text-overflow: ellipsis;
             display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
-    .chev { margin-left: auto; flex: 0 0 auto; color: #52525b; font-size: 22px; padding-left: 6px; }
+    .ver { color: #71717a; font-size: 12px; margin-top: 5px; }
+    .ver .ext { color: #818cf8; }
+    .open { margin-left: auto; flex: 0 0 auto; align-self: center; font-size: 14px; font-weight: 650;
+            color: #c7d2fe; background: rgba(129,140,248,0.14); border: 1px solid rgba(129,140,248,0.28);
+            padding: 7px 15px; border-radius: 999px; white-space: nowrap; }
+    .card:active .open { background: rgba(129,140,248,0.28); }
 
     .empty { color: #71717a; padding: 30px 4px; text-align: center; }
 
@@ -95,6 +100,22 @@
   </div>
 
   <script>
+    var MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    function fmtDate(s) {
+      if (!s) return '';
+      var p = String(s).split('-'); // YYYY-MM-DD, parsed without timezone surprises
+      if (p.length !== 3) return s;
+      return MONTHS[(+p[1] - 1)] + ' ' + (+p[2]) + ', ' + p[0];
+    }
+    function metaLine(app, external) {
+      var bits = [];
+      if (app.version) bits.push('v' + app.version);
+      if (app.updated) bits.push(fmtDate(app.updated));
+      var text = bits.join(' · ');
+      if (external) text += (text ? ' · ' : '') + '<span class="ext">linked</span>';
+      return text;
+    }
+
     (async function () {
       const grid = document.getElementById('grid');
       try {
@@ -115,9 +136,11 @@
 
         grid.innerHTML = '';
         for (const app of apps) {
+          const external = !!app.url;
           const a = document.createElement('a');
           a.className = 'card';
-          a.href = 'apps/' + app.slug + '/';
+          a.href = external ? app.url : ('apps/' + (app.slug || app.id) + '/');
+          if (external) { a.target = '_blank'; a.rel = 'noopener'; }
           const c1 = app.color1 || '#7C3AED', c2 = app.color2 || '#2563EB';
           a.innerHTML =
             '<div class="icon" style="background:linear-gradient(145deg,' + c1 + ',' + c2 + ')">' +
@@ -126,10 +149,12 @@
             '<div class="meta">' +
               '<div class="name"></div>' +
               '<div class="desc"></div>' +
+              '<div class="ver"></div>' +
             '</div>' +
-            '<div class="chev">›</div>';
-          a.querySelector('.name').textContent = app.name || app.slug;
+            '<div class="open">' + (external ? 'Open ↗' : 'Open') + '</div>';
+          a.querySelector('.name').textContent = app.name || app.id || app.slug;
           a.querySelector('.desc').textContent = app.description || '';
+          a.querySelector('.ver').innerHTML = metaLine(app, external);
           grid.appendChild(a);
         }
 
