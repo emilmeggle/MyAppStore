@@ -94,8 +94,10 @@ vercel.json             cache headers (keeps updates instant)
 
 ## Notes / gotchas
 
-- **Use root-absolute paths** in apps (`/icons/...`, `/apps/<slug>/...`). Apps live
-  in subfolders, so relative paths break.
+- **Use relative paths** in apps, never a leading `/` (the site is served from a
+  subpath on GitHub Pages). Apps live at `apps/<slug>/`, so use `../../icons/...`
+  for icons and `../../` to link back to the store. The `new-app` script does this
+  for you.
 - **No service worker on purpose** — it would make pushed updates show up stale on
   iOS. Trade-off: apps need a network connection to load (data saved in
   `localStorage`, like Scratchpad, still persists offline once loaded).

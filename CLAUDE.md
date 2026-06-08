@@ -12,8 +12,12 @@ installs each one to their iPhone home screen (Add to Home Screen in Safari).
    stale on iOS, which breaks the whole "push → instant update" promise. Do not add
    one unless the owner explicitly asks for offline support (and then use
    network-first + versioned cache + `skipWaiting()`).
-3. **Use root-absolute paths everywhere** (`/icons/...`, `/apps/<slug>/...`, `/apps.json`).
-   Apps live in `/apps/<slug>/`, so relative paths break.
+3. **Use RELATIVE paths everywhere — never root-absolute (`/...`).** The site is
+   served from a subpath on GitHub Pages (`/MyAppStore/`), so a leading `/` breaks.
+   Apps always live at `apps/<slug>/` (depth 2), so from an app page use `../../icons/...`
+   for icons and `../../` to link back to the store; the app's own manifest is just
+   `manifest.webmanifest`. The hub (root) uses bare relative paths (`icons/...`,
+   `apps/<slug>/`, `apps.json`). Manifest `start_url`/`scope` are `./`.
 4. **Keep the iOS `<head>` block intact** in every app (apple-touch-icon,
    apple-mobile-web-app-* meta tags, manifest link). See any existing app for the
    exact pattern.

@@ -57,10 +57,11 @@ const appTemplate = ({ name, slug, desc, emoji, c1, c2 }) => `<!doctype html>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>${name}</title>
   <meta name="description" content="${desc}" />
-  <link rel="manifest" href="/apps/${slug}/manifest.webmanifest" />
+  <link rel="manifest" href="manifest.webmanifest" />
   <meta name="theme-color" content="#0b0b0f" />
-  <!-- iOS add-to-home-screen -->
-  <link rel="apple-touch-icon" href="/icons/${slug}-180.png" />
+  <!-- iOS add-to-home-screen. Apps live at apps/<slug>/, so ../../ reaches the store root. -->
+  <link rel="apple-touch-icon" href="../../icons/${slug}-180.png" />
+  <link rel="icon" href="../../icons/${slug}-180.png" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
@@ -88,6 +89,7 @@ const appTemplate = ({ name, slug, desc, emoji, c1, c2 }) => `<!doctype html>
   </style>
 </head>
 <body>
+  <a href="../../" style="position:fixed;top:max(env(safe-area-inset-top),16px);left:18px;color:#c4b5fd;text-decoration:none;font-size:14px">‹ All apps</a>
   <div class="badge">${emoji}</div>
   <h1>${name}</h1>
   <p>${desc}</p>
@@ -108,15 +110,15 @@ const manifestTemplate = ({ name, slug, desc, c1 }) => JSON.stringify({
   name,
   short_name: name,
   description: desc,
-  start_url: `/apps/${slug}/`,
-  scope: `/apps/${slug}/`,
+  start_url: './',
+  scope: './',
   display: 'standalone',
   orientation: 'portrait',
   background_color: '#0b0b0f',
   theme_color: '#0b0b0f',
   icons: [
-    { src: `/icons/${slug}-192.png`, sizes: '192x192', type: 'image/png', purpose: 'any' },
-    { src: `/icons/${slug}-512.png`, sizes: '512x512', type: 'image/png', purpose: 'any' },
+    { src: `../../icons/${slug}-192.png`, sizes: '192x192', type: 'image/png', purpose: 'any' },
+    { src: `../../icons/${slug}-512.png`, sizes: '512x512', type: 'image/png', purpose: 'any' },
   ],
 }, null, 2) + '\n';
 
