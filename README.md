@@ -10,26 +10,21 @@ your iPhone home screen where it runs full-screen like a native app.
 
 ---
 
-## One-time setup: connect to Vercel (≈2 min, you do this once)
+## Live site
 
-The GitHub repo is already created and pushed (see below). To get a public URL:
+**https://emilmeggle.github.io/MyAppStore/** — hosted free on GitHub Pages.
 
-1. Go to **https://vercel.com/new**
-2. Sign in **with GitHub** (top button) and authorize Vercel if asked.
-3. Under **Import Git Repository**, find **`MyAppStore`** → click **Import**.
-4. Leave everything default (Framework Preset: **Other**, no build command) → **Deploy**.
-5. After ~20s you get a URL like `https://my-app-store-xxxx.vercel.app`.
+Every `git push` to `main` auto-redeploys (takes ~1 min to go live).
 
-That URL is your app store. Every future `git push` redeploys it automatically.
-
-> Optional: in the Vercel project → **Settings → Domains** you can add a custom
-> domain or rename the project for a tidier URL.
+> The repo is **public** (required for free GitHub Pages). Never put secrets or
+> API keys in these apps. To go private later, switch hosting to Vercel — see
+> [Going private later](#going-private-later-optional) at the bottom.
 
 ---
 
 ## On your iPhone: install an app
 
-1. Open your Vercel URL in **Safari** (must be Safari, not Chrome, for install).
+1. Open **https://emilmeggle.github.io/MyAppStore/** in **Safari** (must be Safari, not Chrome, for install).
 2. Tap an app to open it.
 3. Tap the **Share** button → **Add to Home Screen** → **Add**.
 4. That app now has its own icon and opens full-screen.
@@ -103,3 +98,16 @@ vercel.json             cache headers (keeps updates instant)
   `localStorage`, like Scratchpad, still persists offline once loaded).
 - **Icons are PNG, opaque, square.** iOS rounds the corners itself; don't pre-round.
 - Install must be done in **Safari** on iOS (Chrome on iOS can't Add to Home Screen).
+
+---
+
+## Going private later (optional)
+
+If you'd rather the source not be public, switch hosting to Vercel:
+
+1. In **https://vercel.com/new**, sign in **with GitHub** → import **`MyAppStore`** → **Deploy**.
+2. Make the repo private again: `gh repo edit emilmeggle/MyAppStore --visibility private`.
+3. Disable GitHub Pages: `gh api -X DELETE repos/emilmeggle/MyAppStore/pages`.
+
+Your URL becomes `https://my-app-store-xxxx.vercel.app` (served at the root, so the
+relative paths still work). Updates still deploy automatically on every `git push`.
