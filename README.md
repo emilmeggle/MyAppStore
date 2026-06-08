@@ -60,6 +60,29 @@ Options: `--emoji "🎯"`, `--desc "..."`, `--colors "#7C3AED,#2563EB"`.
 
 ---
 
+## Connecting an existing project
+
+Each app in the store is just a **self-contained static bundle** living in
+`apps/<slug>/` (an `index.html` plus its assets), registered in `apps.json`. To
+publish one of your other projects into the store:
+
+1. **Build it to static files with RELATIVE asset paths** (this is the #1 gotcha —
+   the store is served from a subpath, so a leading `/` breaks every asset):
+   - **Vite:** set `base: './'` in `vite.config`, then `npm run build` → `dist/`.
+   - **Create React App:** set `"homepage": "."` in `package.json` → `build/`.
+   - **Next.js:** use static export (`output: 'export'`) — heavier; a plain
+     Vite/vanilla build is far easier to slot in.
+   - **Plain HTML/JS:** already fine, just use relative paths.
+2. In this repo, make the slot + icon + registry entry:
+   `npm run new-app -- "Project Name" --emoji "🎯"`
+3. Copy your build output into `apps/<slug>/` (replacing the generated shell
+   `index.html`). Keep the iOS `<head>` tags + `manifest.webmanifest` from the shell.
+4. `git add -A && git commit -m "publish <slug>" && git push` → live in ~1 min.
+
+> A paste-in instruction block for your other projects' `CLAUDE.md` is in the chat.
+> Want a `npm run connect -- <path-to-build> "Name"` script that does steps 2–3
+> automatically? Ask and I'll add it.
+
 ## Preview locally (optional)
 
 ```bash
